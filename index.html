@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agência Mitertáxi | Transfer Executivo & Corridas para Aeroporto</title>
+    <!-- Google Fonts & FontAwesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+   
+    <style>
+        :root {
+            --bg-dark: #0A192F;
+            --bg-card: #112240;
+            --bg-accent: #1D3557;
+            --gold: #F59E0B;
+            --gold-hover: #D97706;
+            --text-light: #F8FAFC;
+            --text-muted: #94A3B8;
+            --green: #10B981;
+            --red: #EF4444;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            line-height: 1.6;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* MARCA D'ÁGUA NO FUNDO */
+        body::before {
+            content: "MITERTÁXI";
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 13vw;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.02);
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: 0;
+            user-select: none;
+        }
+
+        /* HEADER & NAVIGATION */
+        header {
+            background: rgba(10, 25, 47, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text-light);
+            text-decoration: none;
+        }
+
+        .logo i { color: var(--gold); }
+        .logo span { color: var(--gold); }
+
+        nav {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .btn-nav {
+            padding: 0.6rem 1.2rem;
+            border-radius: var(--radius);
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .btn-partner {
+            background: transparent;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+        }
+
+        .btn-partner:hover {
+            background: var(--gold);
+            color: var(--bg-dark);
+        }
+
+        .btn-admin {
+            background: var(--bg-accent);
+            color: var(--text-light);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-admin:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* HERO SECTION */
+        .hero {
+            background: linear-gradient(180deg, rgba(10, 25, 47, 0.85) 0%, #0A192F 100%),
+                        url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+            padding: 4rem 5% 3rem;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .hero h1 span { color: var(--gold); }
+
+        .hero p {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section-title {
+            text-align: center;
+            margin: 3rem 0 2rem;
+        }
+
+        .section-title h2 {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        /* BOOKING FORM CARD */
+        .booking-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            margin-top: -30px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .form-group input, .form-group select {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            color: var(--text-light);
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--gold);
+        }
+
+        /* PROPAGANDA DESCONTO ANTECIPADO */
+        .promo-card {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(16, 185, 129, 0.15) 100%);
+            border: 1px solid var(--gold);
+            border-radius: 8px;
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .promo-card i {
+            font-size: 2rem;
+            color: var(--gold);
+        }
+
+        .promo-card h4 {
+            color: var(--gold);
+            font-size: 1.1rem;
+            margin-bottom: 2px;
+        }
+
+        .promo-card p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .btn-submit {
+            background: var(--gold);
+            color: var(--bg-dark);
+            width: 100%;
+            padding: 1.1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-submit:hover {
+            background: var(--gold-hover);
+        }
+
+        .drivers-banner {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 2.5rem;
+            text-align: center;
+            margin-top: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .drivers-banner i {
+            font-size: 3rem;
+            color: var(--gold);
+            margin-bottom: 1rem;
+        }
+
+        .drivers-banner h3 {
+            font-size: 1.5rem;
+            color: var(--text-light);
+            font-weight: 700;
+        }
+
+        /* MODALS */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 2rem;
+            max-width: 550px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .admin-table th, .admin-table td {
+            padding: 10px;
+            border-bottom: 1px solid var(--border-color);
+            text-align: left;
+            font-size: 0.85rem;
+        }
+
+        .admin-table th { color: var(--gold); }
+
+        .btn-action {
+            padding: 5px 10px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .btn-dispatch { background: var(--green); color: white; }
+
+        /* FOOTER DE DIREITOS AUTORAIS */
+        footer {
+            background: #06101E;
+            border-top: 1px solid var(--border-color);
+            padding: 2rem 5%;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 4rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        footer strong {
+            color: var(--gold);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <a href="#" class="logo">
+            <i class="fa-solid fa-taxi"></i> Agência <span>Mitertáxi</span>
+        </a>
+        <nav>
+            <button class="btn-nav btn-partner" onclick="openModal('partnerModal')">
+                <i class="fa-solid fa-id-card"></i> Seja um Motorista
+            </button>
+            <button class="btn-nav btn-admin" onclick="openModal('adminLoginModal')">
+                <i class="fa-solid fa-user-gear"></i> Área da Gestora
+            </button>
+        </nav>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+        <h1>Transporte Executivo para <span>Aeroportos & Viagens</span></h1>
+        <p>Agende sua corrida ou viagem com total pontualidade e segurança.</p>
+    </section>
+
+    <div class="container">
+        <!-- BOOKING CARD -->
+        <div class="booking-card">
+            <h3 style="margin-bottom: 1.5rem; color: var(--gold); display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-calendar-check"></i> Faça sua Reserva / Agendamento
+            </h3>
+           
+            <!-- PROPAGANDA DE DESCONTO -->
+            <div class="promo-card">
+                <i class="fa-solid fa-tags"></i>
+                <div>
+                    <h4>Desconto de Agendamento Antecipado!</h4>
+                    <p>Faça o seu agendamento com antecedência e garanta <strong>10% de desconto</strong> na sua solicitação.</p>
+                </div>
+            </div>
+
+            <form id="bookingForm" onsubmit="handleBookingSubmit(event)">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Nome Completo</label>
+                        <input type="text" id="clientName" placeholder="Seu nome" required>
+                    </div>
+                    <div class="form-group">
+                        <label>WhatsApp / Telefone</label>
+                        <input type="tel" id="clientPhone" placeholder="(00) 00000-0000" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Tipo de Serviço</label>
+                        <select id="serviceType">
+                            <option value="Corrida Urbana">Corrida Urbana</option>
+                            <option value="Transfer Aeroporto">Transfer Aeroporto</option>
+                            <option value="Viagem Intermunicipal">Viagem Intermunicipal</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Origem (Embarque)</label>
+                        <input type="text" id="origin" placeholder="Endereço de partida" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Destino (Desembarque)</label>
+                        <input type="text" id="destination" placeholder="Endereço de chegada" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Data</label>
+                        <input type="date" id="rideDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Horário</label>
+                        <input type="time" id="rideTime" required>
+                    </div>
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label>Categoria do Veículo</label>
+                        <select id="carCategory">
+                            <option value="Sedan Executivo">Sedan Executivo (Até 4 passageiros)</option>
+                            <option value="SUV Premium">SUV Premium (Espaço Extra Mala)</option>
+                            <option value="Van Executiva">Van Executiva (Grupos / Família)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    <i class="fa-brands fa-whatsapp"></i> Solicitar Corrida no WhatsApp Business
+                </button>
+            </form>
+        </div>
+
+        <!-- MURAL DE MOTORISTAS CREDENCIADOS -->
+        <div class="section-title">
+            <h2>Motoristas Credenciados</h2>
+        </div>
+
+        <div class="drivers-banner">
+            <i class="fa-solid fa-user-check"></i>
+            <h3>Nossos motoristas credenciados a posto para melhor atendê-los</h3>
+        </div>
+    </div>
+
+    <!-- MODAL 1: SEJA UM MOTORISTA PARCEIRO -->
+    <div class="modal" id="partnerModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('partnerModal')">&times;</span>
+            <h2 style="color: var(--gold); margin-bottom: 1rem;">
+                <i class="fa-solid fa-address-card"></i> Cadastro de Motorista Parceiro
+            </h2>
+            <p style="margin-bottom: 1rem; color: var(--text-muted);">
+                Quer credenciar seu veículo e prestar serviços na <strong>Agência Mitertáxi</strong>?
+            </p>
+
+            <div style="background: var(--bg-dark); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; border-left: 4px solid var(--gold);">
+                <h4 style="margin-bottom: 0.5rem;">Documentação Necessária:</h4>
+                <ul style="padding-left: 1.2rem; font-size: 0.9rem; color: var(--text-light);">
+                    <li>Carteira de Motorista (CNH com EAR)</li>
+                    <li>Credencial de Condutor</li>
+                    <li>Alvará de Licenciamento da Categoria</li>
+                    <li>Documento do Veículo (CRLV Atualizado)</li>
+                </ul>
+            </div>
+
+            <p style="font-size: 0.9rem; margin-bottom: 1.5rem;">
+                Envie a cópia legível dos documentos acima para avaliação da administração:
+            </p>
+
+            <a href="mailto:carlamiter038@gmail.com?subject=Credenciamento%20de%20Motorista%20-%20Mitertáxi"
+               class="btn-submit" style="text-decoration: none; margin-bottom: 1rem;">
+                <i class="fa-solid fa-envelope"></i> Enviar Docs p/ carlamiter038@gmail.com
+            </a>
+
+            <a href="https://wa.me/5531975644571?text=Olá!%20Desejo%20enviar%20minha%20documentação%20para%20credenciamento%20de%20motorista."
+               target="_blank" class="btn-nav btn-partner" style="width: 100%; justify-content: center; padding: 0.8rem;">
+                <i class="fa-brands fa-whatsapp"></i> Falar diretamente via WhatsApp
+            </a>
+        </div>
+    </div>
+
+    <!-- MODAL 2: LOGIN ADMINISTRATIVO (GESTORA) -->
+    <div class="modal" id="adminLoginModal">
+        <div class="modal-content" style="max-width: 400px;">
+            <span class="close-modal" onclick="closeModal('adminLoginModal')">&times;</span>
+            <h3 style="color: var(--gold); margin-bottom: 1.5rem; text-align: center;">
+                <i class="fa-solid fa-user-shield"></i> Acesso Restrito da Gestora
+            </h3>
+
+            <form onsubmit="handleAdminLogin(event)">
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label>E-mail da Administradora</label>
+                    <input type="email" id="adminEmail" required placeholder="carlamiter038@gmail.com">
+                </div>
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label>Senha de Acesso</label>
+                    <input type="password" id="adminPass" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn-submit">Entrar no Painel</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 3: PAINEL DE CONTROLE DA GESTORA -->
+    <div class="modal" id="adminDashboardModal">
+        <div class="modal-content" style="max-width: 900px;">
+            <span class="close-modal" onclick="closeModal('adminDashboardModal')">&times;</span>
+            <h2 style="color: var(--gold); margin-bottom: 0.5rem;">
+                <i class="fa-solid fa-sliders"></i> Central de Monitoramento & Despacho
+            </h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">
+                Gerencie solicitações de corridas recebidas.
+            </p>
+
+            <h4 style="color: var(--gold); margin-bottom: 0.5rem;">Corridas & Viagens Solicitadas</h4>
+            <div style="overflow-x: auto;">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Passageiro</th>
+                            <th>Data/Hora</th>
+                            <th>Origem > Destino</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminBookingsTable">
+                        <!-- Gerado via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- RODAPÉ DE DIREITOS AUTORAIS E PROPRIEDADE -->
+    <footer>
+        <p>&copy; 2026 <strong>Empresa Mitertáxi</strong>. Todos os direitos reservados.</p>
+        <p style="margin-top: 5px; font-size: 0.78rem;">
+            Este website, sua estrutura, design, scripts e códigos-fonte pertencem exclusivamente à <strong>Empresa Mitertáxi</strong>. A cópia, reprodução ou distribuição não autorizada é estritamente proibida.
+        </p>
+    </footer>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        const GESTORA_WHATSAPP = "5531975644571";
+        let pendingBookings = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('rideDate').min = new Date().toISOString().split('T')[0];
+        });
+
+        function openModal(id) {
+            document.getElementById(id).style.display = 'flex';
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        function playAlertSound() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(880, ctx.currentTime);
+                osc.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.5);
+            } catch(e) {}
+        }
+
+        // CONFIRMAÇÃO E ENVIO DO PEDIDO PARA O WHATSAPP
+        function handleBookingSubmit(event) {
+            event.preventDefault();
+
+            const booking = {
+                id: Date.now(),
+                clientName: document.getElementById('clientName').value,
+                clientPhone: document.getElementById('clientPhone').value,
+                serviceType: document.getElementById('serviceType').value,
+                origin: document.getElementById('origin').value,
+                destination: document.getElementById('destination').value,
+                date: document.getElementById('rideDate').value,
+                time: document.getElementById('rideTime').value,
+                category: document.getElementById('carCategory').value
+            };
+
+            pendingBookings.push(booking);
+            renderAdminTable();
+
+            playAlertSound();
+            alert(`🚨 ALERTA DE NOVA CORRIDA! 🚨\n\nPassageiro: ${booking.clientName}\nServiço: ${booking.serviceType}\n\nSua solicitação foi registrada e você será redirecionado para o WhatsApp Business.`);
+
+            const whatsappMessage = `*AGÊNCIA MITERTÁXI - NOVA SOLICITAÇÃO*%0A` +
+                `*(Com cupom de 10% OFF no agendamento antecipado)*%0A%0A` +
+                `*Passageiro:* ${booking.clientName}%0A` +
+                `*Telefone:* ${booking.clientPhone}%0A` +
+                `*Serviço:* ${booking.serviceType}%0A` +
+                `*Veículo:* ${booking.category}%0A` +
+                `*Origem:* ${booking.origin}%0A` +
+                `*Destino:* ${booking.destination}%0A` +
+                `*Data/Hora:* ${booking.date} às ${booking.time}%0A%0A` +
+                `Gostaria de confirmar o agendamento!`;
+
+            window.open(`https://wa.me/${GESTORA_WHATSAPP}?text=${whatsappMessage}`, '_blank');
+
+            document.getElementById('bookingForm').reset();
+        }
+
+        function handleAdminLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('adminEmail').value;
+            const pass = document.getElementById('adminPass').value;
+
+            if(email === "carlamiter038@gmail.com" && pass === "123456") {
+                closeModal('adminLoginModal');
+                renderAdminTable();
+                openModal('adminDashboardModal');
+            } else {
+                alert('E-mail ou senha incorretos!');
+            }
+        }
+
+        function renderAdminTable() {
+            const tbody = document.getElementById('adminBookingsTable');
+            if(!tbody) return;
+
+            if(pendingBookings.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-muted);">Nenhuma solicitação pendente no momento.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = pendingBookings.map(b => `
+                <tr>
+                    <td><strong>${b.clientName}</strong><br><small>${b.clientPhone}</small></td>
+                    <td>${b.date}<br>${b.time}</td>
+                    <td>${b.origin} <br>➔ ${b.destination}</td>
+                    <td>
+                        <button class="btn-action btn-dispatch" onclick="contactClient('${b.clientPhone}')">
+                            <i class="fa-brands fa-whatsapp"></i> Contatar
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function contactClient(phone) {
+            const cleanPhone = phone.replace(/\D/g, '');
+            window.open(`https://wa.me/55${cleanPhone}`, '_blank');
+        }
+    </script>
+</body>
+</html>
+
+ 
