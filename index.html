@@ -316,32 +316,6 @@
             color: var(--text-muted);
         }
 
-        .admin-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-        }
-
-        .admin-table th, .admin-table td {
-            padding: 10px;
-            border-bottom: 1px solid var(--border-color);
-            text-align: left;
-            font-size: 0.85rem;
-        }
-
-        .admin-table th { color: var(--gold); }
-
-        .btn-action {
-            padding: 5px 10px;
-            border-radius: 4px;
-            border: none;
-            cursor: pointer;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
-        .btn-dispatch { background: var(--green); color: white; }
-
         /* FOOTER DE DIREITOS AUTORAIS */
         footer {
             background: #06101E;
@@ -502,50 +476,16 @@
         <div class="modal-content" style="max-width: 400px;">
             <span class="close-modal" onclick="closeModal('adminLoginModal')">&times;</span>
             <h3 style="color: var(--gold); margin-bottom: 1.5rem; text-align: center;">
-                <i class="fa-solid fa-user-shield"></i> Acesso Restrito da Gestora
+                <i class="fa-solid fa-user-shield"></i> Acesso à Planilha Segura
             </h3>
 
-            <form onsubmit="handleAdminLogin(event)">
-                <div class="form-group" style="margin-bottom: 1rem;">
-                    <label>E-mail da Administradora</label>
-                    <input type="email" id="adminEmail" required placeholder="carlamiter038@gmail.com">
-                </div>
-                <div class="form-group" style="margin-bottom: 1.5rem;">
-                    <label>Senha de Acesso</label>
-                    <input type="password" id="adminPass" required placeholder="••••••••">
-                </div>
-                <button type="submit" class="btn-submit">Entrar no Painel</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL 3: PAINEL DE CONTROLE DA GESTORA -->
-    <div class="modal" id="adminDashboardModal">
-        <div class="modal-content" style="max-width: 900px;">
-            <span class="close-modal" onclick="closeModal('adminDashboardModal')">&times;</span>
-            <h2 style="color: var(--gold); margin-bottom: 0.5rem;">
-                <i class="fa-solid fa-sliders"></i> Central de Monitoramento & Despacho
-            </h2>
-            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">
-                Gerencie solicitações de corridas recebidas.
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.5rem; text-align: center;">
+                Para sua total segurança, as reservas e agendamentos ficam guardados diretamente no seu Google Drive.
             </p>
 
-            <h4 style="color: var(--gold); margin-bottom: 0.5rem;">Corridas & Viagens Solicitadas</h4>
-            <div style="overflow-x: auto;">
-                <table class="admin-table">
-                    <thead>
-                        <tr>
-                            <th>Passageiro</th>
-                            <th>Data/Hora</th>
-                            <th>Origem > Destino</th>
-                            <th>Ação</th>
-                        </tr>
-                    </thead>
-                    <tbody id="adminBookingsTable">
-                        <!-- Gerado via JavaScript -->
-                    </tbody>
-                </table>
-            </div>
+            <a href="https://sheets.google.com" target="_blank" class="btn-submit" style="text-decoration: none;">
+                <i class="fa-solid fa-file-excel"></i> Abrir Planilha Privada
+            </a>
         </div>
     </div>
 
@@ -557,13 +497,19 @@
         </p>
     </footer>
 
-    <!-- JAVASCRIPT -->
+    <!-- JAVASCRIPT SEGURANÇA E INTEGRAÇÃO -->
     <script>
+        // REDIRECIONAMENTO SEGURANÇA E WHATSAPP
         const GESTORA_WHATSAPP = "5531975644571";
-        let pendingBookings = [];
+       
+        // Insira abaixo a URL gerada no seu Google Apps Script (Passo 2)
+        const GOOGLE_SCRIPT_URL = "COLE_AQUI_A_URL_DO_SEU_GOOGLE_APPS_SCRIPT";
 
         document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('rideDate').min = new Date().toISOString().split('T')[0];
+            const dateInput = document.getElementById('rideDate');
+            if (dateInput) {
+                dateInput.min = new Date().toISOString().split('T')[0];
+            }
         });
 
         function openModal(id) {
@@ -586,12 +532,10 @@
             } catch(e) {}
         }
 
-        // CONFIRMAÇÃO E ENVIO DO PEDIDO PARA O WHATSAPP
         function handleBookingSubmit(event) {
             event.preventDefault();
 
             const booking = {
-                id: Date.now(),
                 clientName: document.getElementById('clientName').value,
                 clientPhone: document.getElementById('clientPhone').value,
                 serviceType: document.getElementById('serviceType').value,
@@ -602,71 +546,42 @@
                 category: document.getElementById('carCategory').value
             };
 
-            pendingBookings.push(booking);
-            renderAdminTable();
+            // 1. Envia os dados de forma 100% segura e privada para o seu Google Sheets
+            if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== "COLE_AQUI_A_URL_DO_SEU_GOOGLE_APPS_SCRIPT") {
+                fetch(GOOGLE_SCRIPT_URL, {
+                    method: "POST",
+                    mode: "no-cors",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(booking)
+                }).catch(err => console.error("Erro no envio:", err));
+            }
 
             playAlertSound();
-            alert(`🚨 ALERTA DE NOVA CORRIDA! 🚨\n\nPassageiro: ${booking.clientName}\nServiço: ${booking.serviceType}\n\nSua solicitação foi registrada e você será redirecionado para o WhatsApp Business.`);
 
-            const whatsappMessage = `*AGÊNCIA MITERTÁXI - NOVA SOLICITAÇÃO*%0A` +
-                `*(Com cupom de 10% OFF no agendamento antecipado)*%0A%0A` +
-                `*Passageiro:* ${booking.clientName}%0A` +
-                `*Telefone:* ${booking.clientPhone}%0A` +
-                `*Serviço:* ${booking.serviceType}%0A` +
-                `*Veículo:* ${booking.category}%0A` +
-                `*Origem:* ${booking.origin}%0A` +
-                `*Destino:* ${booking.destination}%0A` +
-                `*Data/Hora:* ${booking.date} às ${booking.time}%0A%0A` +
+            // 2. Monta mensagem formatada para o seu WhatsApp Business
+            const textMessage = `*AGÊNCIA MITERTÁXI - NOVA SOLICITAÇÃO*\n` +
+                `*(Com cupom de 10% OFF no agendamento antecipado)*\n\n` +
+                `*Passageiro:* ${booking.clientName}\n` +
+                `*Telefone:* ${booking.clientPhone}\n` +
+                `*Serviço:* ${booking.serviceType}\n` +
+                `*Veículo:* ${booking.category}\n` +
+                `*Origem:* ${booking.origin}\n` +
+                `*Destino:* ${booking.destination}\n` +
+                `*Data/Hora:* ${booking.date} às ${booking.time}\n\n` +
                 `Gostaria de confirmar o agendamento!`;
 
+            const whatsappMessage = encodeURIComponent(textMessage);
+
+            // 3. Redireciona para o seu WhatsApp Business (31 97564-4571)
             window.open(`https://wa.me/${GESTORA_WHATSAPP}?text=${whatsappMessage}`, '_blank');
 
             document.getElementById('bookingForm').reset();
         }
-
-        function handleAdminLogin(event) {
-            event.preventDefault();
-            const email = document.getElementById('adminEmail').value;
-            const pass = document.getElementById('adminPass').value;
-
-            if(email === "carlamiter038@gmail.com" && pass === "123456") {
-                closeModal('adminLoginModal');
-                renderAdminTable();
-                openModal('adminDashboardModal');
-            } else {
-                alert('E-mail ou senha incorretos!');
-            }
-        }
-
-        function renderAdminTable() {
-            const tbody = document.getElementById('adminBookingsTable');
-            if(!tbody) return;
-
-            if(pendingBookings.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-muted);">Nenhuma solicitação pendente no momento.</td></tr>`;
-                return;
-            }
-
-            tbody.innerHTML = pendingBookings.map(b => `
-                <tr>
-                    <td><strong>${b.clientName}</strong><br><small>${b.clientPhone}</small></td>
-                    <td>${b.date}<br>${b.time}</td>
-                    <td>${b.origin} <br>➔ ${b.destination}</td>
-                    <td>
-                        <button class="btn-action btn-dispatch" onclick="contactClient('${b.clientPhone}')">
-                            <i class="fa-brands fa-whatsapp"></i> Contatar
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        function contactClient(phone) {
-            const cleanPhone = phone.replace(/\D/g, '');
-            window.open(`https://wa.me/55${cleanPhone}`, '_blank');
-        }
     </script>
 </body>
 </html>
+
+ 
+
 
  
